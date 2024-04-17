@@ -169,7 +169,7 @@ export const forgotPassword = async (req, res) => {
             from: process.env.AUTH_MAIL,
             to: email,
             subject: 'Reset Password',
-            text: `http://localhost:3000/resetPassword/${token}`
+            text: `https://gymgrid.netlify.app/resetPassword/${token}`
           };
           
           transporter.sendMail(mailOptions, function(error, info){
