@@ -108,7 +108,7 @@ export const login = async (req, res) => {
 
         console.log("token:", token);
         // Set cookie with token
-        res.cookie('token', token, { httpOnly: true, maxAge: 3600000 }); // 1 hour expiration
+        res.cookie('token', token, { httpOnly: true }); // 1 hour expiration
 
         // If credentials are valid, return success message or token
         return res.status(200).send({
