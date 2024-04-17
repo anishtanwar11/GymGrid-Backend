@@ -23,7 +23,8 @@ app.use(fileUpload({
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: ["https://gymgrid.netlify.app"],
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
   credentials: true,
 }));
 app.use(session({
