@@ -49,36 +49,30 @@ export const deleteUser = async (req,res)=>{
 //USER LOGIN
 export const login = async (req, res) => {
     const { email, password } = req.body;
-
     try {
         // Find user by email
         const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        if (!user) return res.status(404).json({ message: 'User not found' });
         // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid email or password!' });
-        }
-        console.log('Is Match:', isMatch);
-
+        if (!isMatch) return res.status(401).json({ message: 'Invalid email or password!' });
         // Create JWT token
         const token = jwt.sign({
                         userId: user._id,
                         userName: user.userName
-                    }, 'your_secret_key', { expiresIn: '24h' });
+                    }, process.env.JWT_SECRET);
 
-        console.log("token:", token);
+        const expiryDate = new Date(Date.now() + 3600000 ); // 1 hour
+
+        console.log("token:", token , "," , "expiryDate -", expiryDate);
         // Set cookie with token
         return res
-            .cookie('token', token, { httpOnly: true })
+            .cookie('token', token, { httpOnly: true, expires: expiryDate })
             .status(200)
             .send({
                 message: 'Login successful...!',
                 userId : user._id,
                 userName: user.userName,
-                token
             });
     } catch (error) {
         console.error(error);

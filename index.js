@@ -46,7 +46,7 @@ app.use(cors({
 app.use(session({ 
   secret: 'your-secret-key', // Specify a secret key for session encryption
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   maxAge: 1000 * 60 * 15,
   cookie:{
     secure: true,

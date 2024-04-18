@@ -32,7 +32,7 @@ router.post('/forgot-Password', forgotPassword);
 router.post('/reset-Password/:token', resetPassword);
 
 // Verify User middleware
-router.get('/verify', verify, verifyUser);
+router.get('/verify', verifyTokenByUserName, verifyUser);
 
 //USER PROFILE, verifyToken middleware
 router.get('/profile/:userName', verifyTokenByUserName, getUserProfile)
