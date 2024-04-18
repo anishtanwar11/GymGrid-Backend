@@ -2,12 +2,11 @@ import jwt from 'jsonwebtoken';
 
 export const verifyTokenByUserName = async (req, res, next) => {
     try {
-        const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-        if(!token ){
-            return res.json({status: false, message: 'No token provided'});
-        }
-        const decoded = await jwt.verify(token, 'your_secret_key');
+        const token = req.cookies.token;
+        if(!token ) return res.json({status: false, message: 'No token provided'});
 
+        const decoded = await jwt.verify(token, 'your_secret_key');
+        console.log("decoded token -", decoded);
         req.userId = decoded.userId; // Extract user ID from decoded token
         req.userName = decoded.userName;// Extract username from decoded token
 
@@ -19,7 +18,7 @@ export const verifyTokenByUserName = async (req, res, next) => {
 
 export const verifyTokenByUserId = async (req, res, next) => {
     try {
-        const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+        const token = req.cookies.token;
         if (!token){
             return res.json({status: false, message: 'No token provided'});
         }

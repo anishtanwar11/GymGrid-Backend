@@ -5,43 +5,6 @@ import jwt from 'jsonwebtoken';
 import User from '../models/Users.model.js';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
-// import {v2 as cloudinary} from 'cloudinary';
-
-// cloudinary.config({ 
-//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-//     api_key: process.env.CLOUDINARY_API_KEY, 
-//     api_secret: process.env.CLOUDINARY_API_SECRET
-// });
-
-//USER SING UP
-// export const signup = async (req, res) => {
-//     const { firstName, lastName , userName, email, password } = req.body;
-//     const file = req.files.userImg;
-
-//     cloudinary.uploader.upload(file.tempFilePath, async (err, result) => {
-//         console.log(result);
-//         const userImg = result.url;
-//         const userImgPublicId = result.public_id;
-//         try {
-//             // Check username exist or not
-//             const existUsername = await User.findOne({ userName });
-//             if(existUsername) return res.status(400).json({message: "Username alreadu exist"});
-//             // Check email exist or not
-//             const existingUser = await User.findOne({ email });
-//             if (existingUser) return res.status(400).json({ message: 'User already exists' });
-//             // Hash the password
-//             const hashedPassword = await bcrypt.hash(password, 10);
-//             // Create new user
-//             const newUser = new User({ firstName, lastName, userName, email, password: hashedPassword, userImg, userImgPublicId });
-//             await newUser.save();
-//             res.status(201).json({ message: 'User created successfully' });
-//         } catch (error) {
-//             console.error(error);
-//             res.status(500).json({ message: 'Internal server error' });
-//         }
-//     })
-   
-// };
 
 // Router for update user details
 export const updateProfile = async (req, res) => {
@@ -102,20 +65,21 @@ export const login = async (req, res) => {
 
         // Create JWT token
         const token = jwt.sign({
-             userId: user._id,
-             userName: user.userName
-            }, 'your_secret_key', { expiresIn: '24h' });
+                        userId: user._id,
+                        userName: user.userName
+                    }, 'your_secret_key', { expiresIn: '24h' });
 
         console.log("token:", token);
         // Set cookie with token
-        res.cookie('token', token, { httpOnly: true }); // 1 hour expiration
-
-        // If credentials are valid, return success message or token
-        return res.status(200).send({
-             message: 'Login successful...!',
-             userId : user._id,
-             userName: user.userName,
-        });
+        return res
+            .cookie('token', token, { httpOnly: true })
+            .status(200)
+            .send({
+                message: 'Login successful...!',
+                userId : user._id,
+                userName: user.userName,
+                token
+            });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -221,7 +185,6 @@ export const verifyUser = (req, res) => {
 
 //USER SIGN OUT
 export const signout =  (req, res) => { 
-    res.clearCookie('token')
-    return res.json({status: true})
+    return res.clearCookie('token').status(200).json({status: true});
 };
 
