@@ -63,14 +63,16 @@ export const signUpWithOTP = async (req, res) => {
 export const verifyOTP = async (req, res) => {
   const { otp } = req.body;
   try {
-    const { OTP } = req.session; // Retrieve OTP and email from the session
+    console.log("otp recieved---", otp);
+    const { OTP } = req.session; // Retrieve OTP from the session
+    console.log("OTP Verify", OTP) 
     if (!OTP) {
       return res.status(400).json({ message: "OTP not found in session" });
     }
     // Check if the provided OTP matches the OTP stored in the session
     if (OTP === otp) {
       // Clear the OTP from the session after successful verification
-      const secret = 'your-secret-key';
+      const secret = process.env.JWT_SECRET;
       req.session.secret = secret;
       delete req.session.OTP;
       return res.status(200).json({ message: "OTP verified successfully" });

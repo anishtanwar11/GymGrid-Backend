@@ -5,24 +5,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import session from 'express-session';
-
-
 import { dbConnect } from './src/configs/database.config.js';
-
 // Database connection
 dbConnect();
 
-
 import userRouter from './src/routes/user.router.js';
 
-// Initialize dotenv
-
-
-
 const app = express();
-
-app.set('trust proxy', 1);
-
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "https://gymgrid.netlify.app", "http://localhost:3000");
@@ -44,14 +33,9 @@ app.use(cors({
 
 // Session middleware using RedisStore
 app.use(session({ 
-  secret: 'your-secret-key', // Specify a secret key for session encryption
+  secret: process.env.JWT_SECRET, // Specify a secret key for session encryption
   resave: false,
   saveUninitialized: true,
-  maxAge: 1000 * 60 * 15,
-  cookie:{
-    secure: true,
-    httpOnly: true
-    }
 }));
 
 // Routes

@@ -5,6 +5,13 @@ import jwt from 'jsonwebtoken';
 import User from '../models/Users.model.js';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Router for update user details
 export const updateProfile = async (req, res) => {
@@ -39,7 +46,10 @@ export const updateProfile = async (req, res) => {
 // Route for delete existing user
 export const deleteUser = async (req,res)=>{
     const userId = req.userId;
+    const user = await User.findById(userId);
+    const userImgPublicId = user.userImgPublicId;
     if(userId){
+        await cloudinary.uploader.destroy(userImgPublicId);
         await User.findByIdAndDelete(userId);
         res.status(200).json({message:"User Deleted successfuly"});
     } else {
@@ -127,7 +137,7 @@ export const forgotPassword = async (req, res) => {
             from: process.env.AUTH_MAIL,
             to: email,
             subject: 'Reset Password',
-            text: `https://gymgrid.netlify.app/resetPassword/${token}`
+            text: `http://localhost:3000/resetPassword/${token}`
           };
           
           transporter.sendMail(mailOptions, function(error, info){
